@@ -9,175 +9,127 @@ The application is a hyperlocal recreational cricket marketplace connecting:
 1. Teams/organizers with vacant player slots
 2. Solo cricket players looking for suitable nearby matches
 
-The primary MVP transaction is:
+Primary MVP transaction:
 
-Organizer creates match with vacant slots
-→ nearby player discovers match
-→ player joins or requests to join
-→ organizer approves if required
-→ vacant slot is filled
-→ match takes place
+Organizer creates match with vacant slots  
+→ nearby player discovers match  
+→ player joins or requests to join  
+→ organizer approves if required  
+→ vacant slot is filled  
+→ match takes place  
 → attendance/reliability is recorded
 
 Do not expand scope beyond the PRD without explicit instruction.
 
----
-
 ## Engineering Principles
 
-1. Build incrementally.
-2. Prefer simple, maintainable architecture.
-3. Do not introduce microservices.
-4. Avoid unnecessary abstractions.
-5. Use strict typing.
-6. Validate all API inputs.
-7. Never trust client-calculated slot counts.
-8. Critical match participation operations must be transaction-safe.
-9. Protect user privacy.
-10. Precise residential coordinates must never be publicly exposed.
-11. Write tests for business-critical logic.
-12. Update documentation when architecture changes.
+- Build incrementally.
+- Prefer simple, maintainable architecture.
+- Use a modular monolith; do not introduce microservices.
+- Avoid unnecessary abstractions.
+- Use strict typing.
+- Validate all API inputs.
+- Never trust client-calculated slot counts.
+- Critical participation and capacity operations must be transaction-safe.
+- Protect user privacy and never publicly expose precise residential coordinates.
+- Write tests for business-critical logic.
+- Update documentation when architecture changes.
 
----
-
-## Repository Structure
-
-apps/mobile
-Flutter mobile application.
-
-apps/api
-NestJS backend API.
-
-apps/admin
-Reserved for future admin dashboard.
-
-docs
-Product and engineering documentation.
-
-infrastructure
-Docker and deployment configuration.
-
----
-
-## Mobile Standards
+## Mobile
 
 Use:
 
 - Flutter
-- Riverpod for state management
-- GoRouter for navigation
-- Dio for HTTP
-- Feature-first architecture
+- Riverpod
+- GoRouter
+- Dio
+- Feature-first organization
 
 Preferred structure:
 
-lib/
+```text
+apps/mobile/lib/
   core/
+    config/
+    network/
+    routing/
+    theme/
   features/
   shared/
-
-Each feature may contain:
-
-data/
-domain/
-presentation/
+```
 
 Avoid excessive clean-architecture boilerplate.
 
----
-
-## Backend Standards
+## Backend
 
 Use:
 
 - NestJS
+- TypeScript
 - PostgreSQL
 - PostGIS
 - Prisma
 - Swagger/OpenAPI
 
-Organize backend by domain modules.
+Domain modules:
 
-Expected modules:
-
-auth
-users
-matches
-participants
-availability
-venues
-ratings
-reports
-notifications
+- health
+- auth
+- users
+- matches
+- participants
+- availability
+- venues
+- ratings
+- reports
+- notifications
 
 Later:
 
-chat
-payments
+- chat
+- payments
 
----
+## Database
 
-## Database Rules
-
-Use UUID primary keys.
-
-Use timestamps:
-
-createdAt
-updatedAt
-
-Use enums where appropriate.
-
-Use PostGIS-compatible location storage.
-
-Never rely only on frontend validation.
-
-Match slot counts must remain consistent during concurrent join requests.
-
----
+- Use UUID primary keys.
+- Use `createdAt` and `updatedAt` timestamps where appropriate.
+- Use enums for stable domain states.
+- Support PostGIS geospatial querying.
+- Never rely only on frontend validation.
+- Match capacity and participation operations must remain correct under concurrent requests.
 
 ## Authentication
 
-Development:
+Development must support a documented development OTP flow.
 
-Support a documented development OTP flow.
-
-Production architecture:
-
-Use an OTP provider abstraction so the provider can be replaced.
+Use an `OtpProvider` abstraction so a production SMS/Firebase provider can be added later.
 
 Never hardcode production credentials.
 
----
-
 ## Testing
 
-Critical backend logic requires tests.
+Prioritize tests for:
 
-Prioritize:
-
-match creation
-slot calculations
-join flow
-approval flow
-concurrent joins
-cancellation
-availability matching
-reliability calculations
-
----
+- match creation
+- slot calculations
+- join flow
+- approval flow
+- concurrent joins
+- cancellation
+- availability matching
+- reliability calculations
 
 ## Definition of Done
 
-A task is complete when:
+A task is complete only when:
 
-1. Code compiles.
+1. Code compiles where required tooling is available.
 2. Lint passes.
 3. Relevant tests pass.
-4. Database migrations work.
+4. Database migrations work where infrastructure is available.
 5. API contracts are documented.
 6. No obvious security/privacy issue is introduced.
 7. Existing functionality is not broken.
-8. Documentation is updated when necessary.
+8. Documentation is updated where necessary.
 
-Do not claim a feature works unless it has been verified.
+Do not claim functionality was verified if the required tooling was unavailable.

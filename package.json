@@ -1,0 +1,12 @@
+{
+  "name": "cricket-matchmaking-app",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "lint": "npm run lint --workspace=@cricket-matchmaking/api",
+    "test": "npm run test --workspace=@cricket-matchmaking/api",
+    "build": "npm run build --workspace=@cricket-matchmaking/api",
+    "prisma:generate": "npm run prisma:generate --workspace=@cricket-matchmaking/api"
+  }
+}
